@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from "./home";
 import Navigate from "./Navigate";
 import Journal from "./journal";
+import Login from "./login";
 
 const App = () => {
   return (
@@ -13,8 +14,10 @@ const App = () => {
           <Routes>
               <Route path="/" element={<Home />}/>
               <Route path="/journals" element={<Journal/>}/>
+
+              <Route path="/login" element={<Login/>}/>
           </Routes>
-    </BrowserRouter> 
+    </BrowserRouter>
   );
 };
 
