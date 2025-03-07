@@ -1,10 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, Dropdown, Form, Button, InputGroup } from 'react-bootstrap';
 
 import { Link } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa'
 
+import supabase from "./supabaseClient";
+
 const Navigate = () => {
+  const [user, setUser] = useState(null);
+
+  // 檢查用戶是否已登入
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkUser();
+
+    // 監聽身份變化
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  // 登出
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearchChange = (e) => {
@@ -99,8 +127,23 @@ const Navigate = () => {
             </Dropdown>
 
             <Nav.Link as={Link} to="/journals" style={{ color: '#fff' }}>Journals</Nav.Link>
-            <Nav.Link as={Link} to="/collections" style={{ color: '#fff' }}>Collections</Nav.Link>
-            <Nav.Link as={Link} to="/login" style={{ color: '#fff' }}>Login</Nav.Link>
+
+            {user ? (
+              <>
+                <Nav.Link as={Link} to="/collections" style={{ color: '#fff' }}>Collections</Nav.Link>
+                <Nav.Link 
+                    as="button" 
+                    onClick={handleLogout} 
+                    style={{ 
+                      color: "#fff", 
+                    }}
+                  >
+                    Logout
+                </Nav.Link>
+              </>
+            ) : (
+              <Nav.Link as={Link} to="/login" style={{ color: '#fff' }}>Login</Nav.Link>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
