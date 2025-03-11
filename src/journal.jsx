@@ -1,4 +1,6 @@
 import LineChart from "./linechart";
+import supabase from "./supabaseClient";
+import { useEffect, useState } from 'react'
 
 const journals = [
   {
@@ -49,6 +51,27 @@ const journals = [
 ];
 
 const Journal = () => {
+  const [journal_data, setJournals] = useState([])
+
+  const fetchJournals = async () => {
+    const { data, error } = await supabase
+      .from('journals')
+      .select('*')
+      .limit(3)
+
+    if (error) {
+      console.error('Error:', error)
+    } else {
+      setJournals(data)
+      console.log("success:")
+    }
+  }
+
+  useEffect(() => {
+    fetchJournals()
+  }, [])
+
+
   return (
     <div className="container mt-5">
       {journals.map((journal, index) => (
@@ -62,7 +85,7 @@ const Journal = () => {
             className="col-md-6 pe-md-3" 
             style={{ borderLeft: '2px solid #d3d3d3', paddingLeft: '1rem' }}
             >
-              <p className="text-muted fs-6" style={{ whiteSpace: 'nowrap' }}>
+              <div className="text-muted fs-6" style={{ whiteSpace: 'nowrap' }}>
                 <p className="mb-2">
                   <strong>Database:</strong> {journal.database} &nbsp; | &nbsp;
                   <strong>Field:</strong> {journal.field} &nbsp; | &nbsp;
@@ -74,7 +97,7 @@ const Journal = () => {
                   <strong>EISSN:</strong> {journal.EISSN} &nbsp; | &nbsp;
                   <strong>ISSN:</strong> {journal.ISSN}
                 </p>
-              </p>
+              </div>
             </div>
             {/* IF Value */}
             <p className="mb-2">
