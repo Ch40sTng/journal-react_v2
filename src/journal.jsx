@@ -26,7 +26,7 @@ const Journal = () => {
   return (
     <div className="container mt-5">
       {Array.isArray(journals) && journals.length > 0 ? (
-        journals.map((journal, index) => (  // 不需要在這裡加上額外的花括號
+        journals.map((journal, index) => (
           <div key={journal.id} className="row align-items-center mb-4">
             {/* 左側：期刊資訊區塊 */}
             <div className="col-md-6 pe-md-3">
