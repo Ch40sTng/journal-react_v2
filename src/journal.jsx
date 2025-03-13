@@ -2,14 +2,19 @@ import LineChart from "./linechart";
 import supabase from "./supabaseClient";
 import { useEffect, useState } from 'react';
 
+const getLatestUpdate = (arr) => {
+  if (!Array.isArray(arr)) return -1;
+  return arr.findIndex(val => val != null);
+};
+
 const Journal = () => {
   const [journals, setJournals] = useState([]);
 
   const fetchJournals = async () => {
     const { data, error } = await supabase
-      .from('journal_data2')
+      .from('journal_data')
       .select('*')
-      .limit(3);
+      .limit(5);
 
     if (error) {
       console.error('Error:', error);
@@ -53,26 +58,83 @@ const Journal = () => {
               </div>
               {/* IF Value */}
               <p className="mb-2">
-                <strong>Impact Factor (IF):</strong> {journal.if_value?.[0] ?? 'N/A'}
+                <strong>Impact Factor (IF):</strong> {
+                  (() => {
+                    const latestIfIndex = getLatestUpdate(journal.if_value);
+                    if (latestIfIndex == -1) {
+                      return 'N/A';
+                    }
+                    return (
+                      <>
+                        {journal.if_value[latestIfIndex]}{' '}
+                          <span style={{ color: 'grey' }}>
+                              ( last update in {2024 - latestIfIndex} )
+                          </span>
+                      </>
+                    );
+                  })()
+                }
               </p>
               
               {/* Total Cites */}
               <p className="mb-2">
-                <strong>Total Cites:</strong> {journal.totalcites?.[0] ?? 'N/A'}
+                <strong>Total Cites:</strong> {
+                  (() => {
+                    const latestTotalCitiesIndex = getLatestUpdate(journal.totalcites);
+                    if (latestTotalCitiesIndex == -1) {
+                      return 'N/A';
+                    }
+                    return (
+                      <>
+                        {journal.totalcites[latestTotalCitiesIndex]}{' '}
+                          <span style={{ color: 'grey' }}>
+                              ( last update in {2024 - latestTotalCitiesIndex} )
+                          </span>
+                      </>
+                    );
+                  })()
+                }
               </p>
               
               {/* Rank (Numerator/Denominator) */}
               <p className="mb-2">
-                <strong>期刊領先程度百分位:</strong> {journal.numerator?.[0] ?? 'N/A'} / {journal.denominator?.[0] ?? 'N/A'}
+                <strong>期刊領先程度百分位:</strong> {
+                  (() => {
+                    const latestRankIndex = Math.min(getLatestUpdate(journal.numerator), getLatestUpdate(journal.denominator));
+                    if (latestRankIndex == -1) {
+                      return 'N/A';
+                    }
+                    return (
+                      <>
+                        {journal.numerator[latestRankIndex]} / {journal.denominator[latestRankIndex]} {' '}
+                          <span style={{ color: 'grey' }}>
+                              ( last update in {2024 - latestRankIndex} )
+                          </span>
+                      </>
+                    );
+                  })()
+                }
               </p>
               
               {/* Publications */}
               <p className="mb-2">
-                <strong>Number of publications: </strong> {journal.publication?.[0] ?? 'N/A'}
+                <strong>Number of publications: </strong> {
+                  (() => {
+                    const latestPublicIndex = getLatestUpdate(journal.publication);
+                    if (latestPublicIndex == -1) {
+                      return 'N/A';
+                    }
+                    return (
+                      <>
+                        {journal.publication[latestPublicIndex]}{' '}
+                          <span style={{ color: 'grey' }}>
+                              ( last update in {2024 - latestPublicIndex} )
+                          </span>
+                      </>
+                    );
+                  })()
+                }
               </p>
-              
-              {/* Latest Update Year */}
-              {/* <p className="mb-0"><strong>Latest Update Year:</strong> {journal.year}</p> */}
             </div>
 
             {/* 右側：折線圖區塊 */}
