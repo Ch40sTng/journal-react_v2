@@ -106,13 +106,13 @@ const Navigate = () => {
                     <Dropdown.Item as={Link} to="/journals/JCR_AHCI">
                       AHCI
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/journals">
+                    <Dropdown.Item as={Link} to="/journals/JCR_ESCI">
                       ESCI
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/journals">
+                    <Dropdown.Item as={Link} to="/journals/JCR_SCIE">
                       SCIE
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/journals">
+                    <Dropdown.Item as={Link} to="/journals/JCR_SSCI">
                       SSCI
                     </Dropdown.Item>
                   </Dropdown.Menu>

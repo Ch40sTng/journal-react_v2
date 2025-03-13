@@ -2,7 +2,7 @@ import LineChart from "./linechart";
 import supabase from "./supabaseClient";
 import { useEffect, useState } from "react";
 
-const JCR_AHCI_journal = () => {
+const JCR_ESCI_journal = () => {
     const [journals, setJournals] = useState([]);
     const [fields, setFields] = useState([]);
     const [selectedField, setSelectedField] = useState("");
@@ -13,7 +13,7 @@ const JCR_AHCI_journal = () => {
         const { data, error } = await supabase
             .from("journals")
             .select("field")
-            .eq("database", "JCR資料庫-AHCI");
+            .eq("database", "JCR資料庫-ESCI");
 
         if (error) throw new Error(error.message);
 
@@ -25,7 +25,7 @@ const JCR_AHCI_journal = () => {
         const { data, error } = await supabase
             .from("journals")
             .select("*")
-            .eq("database", "JCR資料庫-AHCI")
+            .eq("database", "JCR資料庫-ESCI")
             .eq("field", field)
             .order("if_value", { ascending: false });
 
@@ -41,7 +41,7 @@ const JCR_AHCI_journal = () => {
         const { data, error } = await supabase
             .from("journals")
             .select('*')
-            .eq("database", "JCR資料庫-AHCI")
+            .eq("database", "JCR資料庫-ESCI")
             .eq("field", field)
             .eq("name", journalName)
             .order("year_id", { ascending: true });
@@ -146,7 +146,7 @@ const JCR_AHCI_journal = () => {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">JCR AHCI Journal Viewer</h1>
+            <h1 className="text-2xl font-bold mb-4">JCR ESCI Journal Viewer</h1>
             <select
                 className="p-2 border rounded mb-4"
                 value={selectedField}
@@ -177,4 +177,4 @@ const JCR_AHCI_journal = () => {
     );
 };
 
-export default JCR_AHCI_journal;
+export default JCR_ESCI_journal;
