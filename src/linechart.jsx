@@ -6,8 +6,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 const LineChart = ({ journal }) => {
   const years = [2019, 2020, 2021, 2022, 2023, 2024];
-  const ifValues = journal.if_value; 
-  const totalCites = journal.totalcites; 
+  const ifValues = journal.if_value.map(value => Number(value)).reverse();
+  const totalCites = journal.totalcites.map(value => Number(value)).reverse(); 
 
   const data = {
     labels: years,
