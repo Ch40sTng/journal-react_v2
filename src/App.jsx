@@ -6,7 +6,7 @@ import Home from "./home";
 import Navigate from "./Navigate";
 import Journal from "./journal";
 import Login from "./login";
-import JCR_AHCI_journal from "./JCR_AHCI";
+import JournalViewer from "./journalviewer";
 
 const App = () => {
   return (
@@ -16,7 +16,7 @@ const App = () => {
               <Route path="/" element={<Home />}/>
               <Route path="/journals" element={<Journal/>}/>
               <Route path="/login" element={<Login/>}/>
-              <Route path="/journals/JCR_AHCI" element={<JCR_AHCI_journal/>}/>
+              <Route path="/journals/:databaseName" element={<JournalViewer />} />
           </Routes>
     </BrowserRouter>
   );

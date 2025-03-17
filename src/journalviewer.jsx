@@ -2,8 +2,20 @@ import supabase from "./supabaseClient";
 import { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import DisplayJournal from "./displayJournal";
+import { useParams } from 'react-router-dom';
 
-const JCR_AHCI_journal = () => {
+const databaseNameMap = {
+  "JCR-AHCI": "JCR資料庫-AHCI",
+  "JCR-ESCI": "JCR資料庫-ESCI",
+  "JCR-SCIE": "JCR資料庫-SCIE",
+  "JCR-SSCI": "JCR資料庫-SSCI",
+  "Scopus": "Scopus"
+};
+
+const JournalViewer = () => {
+  const { databaseName } = useParams();
+  const displayName = databaseNameMap[databaseName] || databaseName;
+
   const [journals, setJournals] = useState([]);
   const [expandedIds, setExpandedIds] = useState({});
   const [loading, setLoading] = useState(false);
@@ -18,7 +30,7 @@ const JCR_AHCI_journal = () => {
     const { data, error } = await supabase
         .from("journals")
         .select("field")
-        .eq("database", "JCR資料庫-AHCI");
+        .eq("database", displayName);
 
     if (error) throw new Error(error.message);
 
@@ -35,7 +47,7 @@ const JCR_AHCI_journal = () => {
       .from('journal_data')
       .select('*')
       .range(start, end)
-      .eq("database", "JCR資料庫-AHCI")
+      .eq("database", displayName)
       .eq("field", field)
       .order("if_value", { ascending: false });
 
@@ -53,11 +65,11 @@ const JCR_AHCI_journal = () => {
     if (selectedField) {
       fetchJournals(page, selectedField);
     }
-  }, [page, selectedField]);
+  }, [page, selectedField, displayName]);
 
   useEffect(() => {
     fetchFields();
-  }, []);
+  }, [displayName]);
 
   const handleFieldChange = (event) => {
     const field = event.target.value;
@@ -87,7 +99,7 @@ const JCR_AHCI_journal = () => {
 
   return (
     <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">JCR AHCI Journal Viewer</h1>
+        <h1 className="text-2xl font-bold mb-4">{displayName} Journal Viewer</h1>
         <select
             className="p-2 border rounded mb-4"
             value={selectedField}
@@ -155,4 +167,4 @@ const JCR_AHCI_journal = () => {
   );
 };
 
-export default JCR_AHCI_journal;
+export default JournalViewer;

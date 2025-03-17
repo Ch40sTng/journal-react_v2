@@ -90,7 +90,7 @@ const Navigate = () => {
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item as={Link} to="/journals">EI Compendex (Engineering Village)</Dropdown.Item>
-                <Dropdown.Item as={Link} to="/journals">Scopus</Dropdown.Item>
+                <Dropdown.Item as={Link} to="/journals/Scopus">Scopus</Dropdown.Item>
 
                 {/* JCR */}
                 <Dropdown drop="end" className="text-start">
@@ -103,16 +103,16 @@ const Navigate = () => {
                     JCR
                   </Dropdown.Toggle>
                   <Dropdown.Menu align="end">
-                    <Dropdown.Item as={Link} to="/journals/JCR_AHCI">
+                    <Dropdown.Item as={Link} to="/journals/JCR-AHCI">
                       AHCI
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/journals">
+                    <Dropdown.Item as={Link} to="/journals/JCR-ESCI">
                       ESCI
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/journals">
+                    <Dropdown.Item as={Link} to="/journals/JCR-SCIE">
                       SCIE
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/journals">
+                    <Dropdown.Item as={Link} to="/journals/JCR-SSCI">
                       SSCI
                     </Dropdown.Item>
                   </Dropdown.Menu>
