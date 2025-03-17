@@ -103,7 +103,7 @@ const Navigate = () => {
                     JCR
                   </Dropdown.Toggle>
                   <Dropdown.Menu align="end">
-                    <Dropdown.Item as={Link} to="/journals">
+                    <Dropdown.Item as={Link} to="/journals/JCR_AHCI">
                       AHCI
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to="/journals">
