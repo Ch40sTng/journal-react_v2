@@ -1,4 +1,5 @@
 import LineChart from "./linechart";
+import RadarChart from "./radarchart";
 import { FiChevronRight, FiChevronDown } from "react-icons/fi";
 
 const getLatestUpdate = (arr) => {

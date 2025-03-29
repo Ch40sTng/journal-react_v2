@@ -15,10 +15,6 @@ const App = () => {
           <Routes>
               <Route path="/" element={<Home />}/>
               <Route path="/journals" element={<Journal/>}/>
-              <Route path="/journals/JCR_AHCI" element={<JCR_AHCI/>}/>
-              <Route path="/journals/JCR_ESCI" element={<JCR_ESCI/>}/>
-              <Route path="/journals/JCR_SCIE" element={<JCR_SCIE/>}/>
-              <Route path="/journals/JCR_SSCI" element={<JCR_SSCI/>}/>
               <Route path="/login" element={<Login/>}/>
               <Route path="/journals/:databaseName" element={<JournalViewer />} />
           </Routes>

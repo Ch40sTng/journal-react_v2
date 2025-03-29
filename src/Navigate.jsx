@@ -103,18 +103,6 @@ const Navigate = () => {
                     JCR
                   </Dropdown.Toggle>
                   <Dropdown.Menu align="end">
-<<<<<<< HEAD
-                    <Dropdown.Item as={Link} to="/journals/JCR_AHCI">
-                      AHCI
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/journals/JCR_ESCI">
-                      ESCI
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/journals/JCR_SCIE">
-                      SCIE
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/journals/JCR_SSCI">
-=======
                     <Dropdown.Item as={Link} to="/journals/JCR-AHCI">
                       AHCI
                     </Dropdown.Item>
@@ -125,7 +113,6 @@ const Navigate = () => {
                       SCIE
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to="/journals/JCR-SSCI">
->>>>>>> 73e32289e08b42e0348c5929dcbc367f9ba0cdbb
                       SSCI
                     </Dropdown.Item>
                   </Dropdown.Menu>
