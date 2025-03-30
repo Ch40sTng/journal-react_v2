@@ -1,7 +1,8 @@
 import LineChart from "./linechart";
 import RadarChart from "./radarchart";
-import { FiChevronRight, FiChevronDown } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiChevronDown } from "react-icons/fi";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import React, { useState } from "react";
 
 const getLatestUpdate = (arr) => {
   if (!Array.isArray(arr)) return -1;
@@ -9,6 +10,19 @@ const getLatestUpdate = (arr) => {
 };
 
 const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, toggleCollection }) => {
+  const [currentChartIndex, setCurrentChartIndex] = useState(0);
+  const charts = [LineChart, RadarChart];
+
+  // 切換到下一個圖表
+  const handleNextChart = () => {
+    setCurrentChartIndex((prevIndex) => (prevIndex + 1) % charts.length); 
+  };
+
+  // 切換到上一個圖表
+  const handlePreviousChart = () => {
+    setCurrentChartIndex((prevIndex) => (prevIndex - 1 + charts.length) % charts.length);
+  };
+
   // console.log("fetch collection:",collections);
   if (journals.length == 0) {
 	  return <p>沒有期刊資料。</p>
@@ -168,8 +182,39 @@ const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, tog
       
             {/* 右側：折線圖區塊 */}
             <div className="col-md-6 ps-md-3">
-              <LineChart journal={journal} />
-            </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  {/* 左箭頭 */}
+                  <button
+                    onClick={handlePreviousChart}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "24px",
+                    }}
+                  >
+                    <FiChevronLeft />
+                  </button>
+
+                  {/* 顯示當前的圖表 */}
+                  <div style={{ flex: 1, textAlign: "center" }}>
+                    {React.createElement(charts[currentChartIndex], { journal })}
+                  </div>
+
+                  {/* 右箭頭 */}
+                  <button
+                    onClick={handleNextChart}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "24px",
+                    }}
+                  >
+                    <FiChevronRight />
+                  </button>
+                </div>
+              </div>
           </>
           )}
           {/* 除最後一項外，加入分隔線 */}
