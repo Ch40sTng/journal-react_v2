@@ -195,6 +195,7 @@ const JournalViewer = () => {
                 <option key={field} value={field}>{field}</option>
             ))}
         </select>
+        
         <ul>
           {loading ? (
             <li className="text-center">Loading...</li>
