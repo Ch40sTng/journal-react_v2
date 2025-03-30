@@ -1,16 +1,19 @@
 import LineChart from "./linechart";
 import RadarChart from "./radarchart";
 import { FiChevronRight, FiChevronDown } from "react-icons/fi";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 
 const getLatestUpdate = (arr) => {
   if (!Array.isArray(arr)) return -1;
 	return arr.findIndex(val => val != null);
 };
 
-const DisplayJournal = ({ journals, expandedIds, toggleJournal }) => {
+const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, toggleCollection }) => {
+  // console.log("fetch collection:",collections);
   if (journals.length == 0) {
 	  return <p>沒有期刊資料。</p>
   }
+  if (!collections) return null;
 	return (
 	  <>
       {journals.map((journal, index) => (
@@ -30,6 +33,30 @@ const DisplayJournal = ({ journals, expandedIds, toggleJournal }) => {
             {/* 根據展開狀態變換圖示 */}
             {expandedIds[journal.id] ? <FiChevronDown /> : <FiChevronRight />}
             <h4 className="fw-bold fs-3 mb-0">{journal.name}</h4>
+
+             {/* 收藏按鈕 */}
+             <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleCollection(journal.id);
+              }}
+              className="d-flex align-items-center justify-content-center gap-2 px-2 py-1 border-0 rounded"
+              style={{
+                backgroundColor: "#f8f9fa",
+                color: collections?.includes(journal.id) ? "#000" : "#666", 
+                cursor: "pointer",
+                boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.2)",
+                width: "auto",
+                maxWidth: "50px",
+                padding: "5px 10px",
+              }}
+            >
+              {collections?.includes(journal.id) ? (
+                <FaBookmark size={18} color="#000" />
+              ) : (
+                <FaRegBookmark size={18} color="#666" />
+              )}
+            </button>
           </div>
 
           {expandedIds[journal.id] && (
@@ -143,11 +170,10 @@ const DisplayJournal = ({ journals, expandedIds, toggleJournal }) => {
             <div className="col-md-6 ps-md-3">
               <LineChart journal={journal} />
             </div>
-      
-            {/* 除最後一項外，加入分隔線 */}
-            {index !== journals.length - 1 && <hr className="my-3 w-100" />}
           </>
           )}
+          {/* 除最後一項外，加入分隔線 */}
+          {index !== journals.length - 1 && <hr className="my-3 w-100" />}
         </div>
       ))}
     </>

@@ -25,17 +25,101 @@ const JournalViewer = () => {
   const [fields, setFields] = useState([]);
   const [selectedField, setSelectedField] = useState("");
 
+  const [collections, setCollections] = useState([]);
+
+  const fetchCollections = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id;
+  
+    if (!userId) {
+      console.warn("使用者尚未登入");
+      return;
+    }
+    console.log("User:", userId);
+    
+    try {
+      const { data, error } = await supabase
+        .from("Collections")
+        .select("journal_id")
+        .eq("user_id", userId);
+  
+      if (error) throw error;
+      
+      setCollections(data?.map(item => item.journal_id) || []);
+    } 
+    catch (error) {
+      console.error("Fetch collections error:", error.message);
+    }
+  };
+  
+  const toggleCollection = async (journalId) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id;
+  
+    if (!userId) {
+      console.warn("使用者尚未登入");
+      return;
+    }
+  
+    const isCollected = collections.includes(journalId);
+  
+    try {
+      if (isCollected) {
+        const { error } = await supabase
+          .from("Collections")
+          .delete()
+          .eq("journal_id", journalId)
+          .eq("user_id", userId);
+  
+        if (error) throw error;
+  
+        console.log("Collection has been deleted:", journalId);
+        setCollections(prev => prev.filter(id => id !== journalId));
+      } else {
+        const { error } = await supabase
+          .from("Collections")
+          .insert([{ user_id: userId, journal_id: journalId }]);
+  
+        if (error) throw error;
+  
+        console.log("Collection has been inserted:", journalId);
+        setCollections(prev => [...prev, journalId]);
+      }
+
+    } catch (error) {
+      console.error(`${isCollected ? "刪除" : "新增"} 收藏失敗:`, error.message);
+    }
+  };
+  
+  useEffect(() => {
+    fetchCollections();
+  }, []);
+
   //接收supabase資料
   const fetchFields = async () => {
-    const { data, error } = await supabase
+    if (!displayName) return;
+  
+    let allFields = new Set();
+    let start = 0;
+    const batchSize = 1000;
+  
+    while (true) {
+      const { data, error } = await supabase
         .from("journals")
         .select("field")
-        .eq("database", displayName);
-
-    if (error) throw new Error(error.message);
-
-    const uniqueFields = [...new Set(data.map((item) => item.field))];
-    setFields(uniqueFields);
+        .eq("database", displayName)
+        .order("field", { ascending: true })
+        .range(start, start + batchSize - 1);
+  
+      if (error) throw new Error(error.message);
+      if (!data || data.length === 0) break;
+  
+      data.forEach(item => allFields.add(item.field));
+      start += batchSize;
+    }
+  
+    setFields([...allFields]);
+    console.log("Successfully fetch field")
   };
 
   const fetchJournals = async (newPage, field) => {
@@ -55,7 +139,7 @@ const JournalViewer = () => {
       console.error('Error:', error);
     } else {
       setJournals(data || []);
-      console.log("success:");
+      console.log("successfully fetch journals");
     }
 
     setLoading(false);
@@ -68,6 +152,7 @@ const JournalViewer = () => {
   }, [page, selectedField, displayName]);
 
   useEffect(() => {
+    if (!displayName) return;
     fetchFields();
   }, [displayName]);
 
@@ -75,7 +160,7 @@ const JournalViewer = () => {
     const field = event.target.value;
     setSelectedField(field);
     fetchJournals(page, field);
-};
+  };
 
   //設定展開狀態
   const toggleJournal = (id) => {
@@ -113,7 +198,13 @@ const JournalViewer = () => {
         <ul>
           {loading ? (
             <li className="text-center">Loading...</li>
-          ) : <DisplayJournal journals={journals} expandedIds={expandedIds} toggleJournal={toggleJournal} />}
+          ) : <DisplayJournal 
+                journals={journals}
+                expandedIds={expandedIds}
+                toggleJournal={toggleJournal}
+                collections={collections}
+                toggleCollection={toggleCollection} 
+              />}
         </ul>
 
         {/* 分頁按鈕 */}
