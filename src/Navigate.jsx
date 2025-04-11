@@ -89,7 +89,6 @@ const Navigate = () => {
                 Database
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item as={Link} to="/journals">EI Compendex (Engineering Village)</Dropdown.Item>
                 <Dropdown.Item as={Link} to="/journals/Scopus">Scopus</Dropdown.Item>
 
                 {/* JCR */}

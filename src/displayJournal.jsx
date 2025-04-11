@@ -9,7 +9,7 @@ const getLatestUpdate = (arr) => {
 	return arr.findIndex(val => val != null);
 };
 
-const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, toggleCollection }) => {
+const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, toggleCollection, checkBox, selectedJournals, toggleSelectedJournal}) => {
   const [currentChartIndex, setCurrentChartIndex] = useState(0);
   const charts = [LineChart, RadarChart];
 
@@ -46,13 +46,13 @@ const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, tog
           >
             {/* 根據展開狀態變換圖示 */}
             {expandedIds[journal.id] ? <FiChevronDown /> : <FiChevronRight />}
-            <h4 className="fw-bold fs-3 mb-0">{journal.name}</h4>
+            <h2 className="fw-bold fs-3 mb-0">{journal.name}</h2>
 
-             {/* 收藏按鈕 */}
-             <button
+            {/* 收藏按鈕 */}
+            <button
               onClick={(e) => {
-                e.stopPropagation();
-                toggleCollection(journal.id);
+              e.stopPropagation();
+              toggleCollection(journal.id);
               }}
               className="d-flex align-items-center justify-content-center gap-2 px-2 py-1 border-0 rounded"
               style={{
@@ -71,6 +71,23 @@ const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, tog
                 <FaRegBookmark size={18} color="#666" />
               )}
             </button>
+
+           {/*只使用於收藏頁面*/}
+           {/* Checkbox */}
+           {checkBox && (
+              <input
+                type="checkbox"
+                checked={selectedJournals.includes(journal.id)}
+                onChange={() => toggleSelectedJournal(journal.id)}
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  marginLeft: "10px",
+                  cursor: "pointer",
+                }}
+              />
+            )}
           </div>
 
           {expandedIds[journal.id] && (

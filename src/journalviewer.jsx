@@ -9,7 +9,9 @@ const databaseNameMap = {
   "JCR-ESCI": "JCR資料庫-ESCI",
   "JCR-SCIE": "JCR資料庫-SCIE",
   "JCR-SSCI": "JCR資料庫-SSCI",
-  "Scopus": "Scopus"
+  "Scopus": "Scopus",
+  "Literature": "文學院認列核心期刊",
+  "Management": "管理學院傑出期刊"
 };
 
 const JournalViewer = () => {
@@ -26,6 +28,9 @@ const JournalViewer = () => {
   const [selectedField, setSelectedField] = useState("");
 
   const [collections, setCollections] = useState([]);
+
+  const [sortOption, setSortOption] = useState("");
+  const [sortDirection, setSortDirection] = useState("desc");
 
   const fetchCollections = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -127,21 +132,25 @@ const JournalViewer = () => {
     const start = (newPage - 1) * itemsPerPage;
     const end = start + itemsPerPage - 1;
 
+    const sortBy = sortOption || "if_value"; // 預設以 IF 排序
+    const ascending = sortDirection === "asc";
+
+  
     const { data, error } = await supabase
       .from('journal_data')
       .select('*')
       .range(start, end)
       .eq("database", displayName)
       .eq("field", field)
-      .order("if_value", { ascending: false });
-
+      .order(sortBy, { ascending });
+  
     if (error) {
       console.error('Error:', error);
     } else {
       setJournals(data || []);
-      console.log("successfully fetch journals");
+      console.log("Successfully fetched journals");
     }
-
+  
     setLoading(false);
   };
 
@@ -150,6 +159,12 @@ const JournalViewer = () => {
       fetchJournals(page, selectedField);
     }
   }, [page, selectedField, displayName]);
+
+  useEffect(() => {
+    if (selectedField) {
+      fetchJournals(page, selectedField);
+    }
+  }, [page, selectedField, sortOption, sortDirection]);
 
   useEffect(() => {
     if (!displayName) return;
@@ -196,6 +211,28 @@ const JournalViewer = () => {
             ))}
         </select>
         
+        {/* 排序欄位選單 */}
+        <select
+          className="p-2 border rounded mb-4 ml-4"
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+        >
+          <option value="">選擇排序欄位</option>
+          <option value="if_value">IF</option>
+          <option value="cites">Total Cites</option>
+        </select>
+
+        {/* 排序方向選單 */}
+        <select
+          className="p-2 border rounded mb-4 ml-4"
+          value={sortDirection}
+          onChange={(e) => setSortDirection(e.target.value)}
+        >
+          <option value="asc">遞增</option>
+          <option value="desc">遞減</option>
+        </select>
+
+
         <ul>
           {loading ? (
             <li className="text-center">Loading...</li>
@@ -204,7 +241,7 @@ const JournalViewer = () => {
                 expandedIds={expandedIds}
                 toggleJournal={toggleJournal}
                 collections={collections}
-                toggleCollection={toggleCollection} 
+                toggleCollection={toggleCollection}
               />}
         </ul>
 
