@@ -4,7 +4,7 @@ import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler,
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-const RadarChart = ( { journal } ) => {
+const RadarChart = ( { journal, width = "100%", height = 350 } ) => {
 
     if (!journal || !journal.if_value) {
         return <p>Loading...</p>;
@@ -51,21 +51,34 @@ const RadarChart = ( { journal } ) => {
 
     const options = {
         responsive: true,
-        scales: {
-            r: {
-                suggestedMin: -10,
-                suggestedMax: 10,
-                angleLines: { color: "gray" },
-                grid: { color: "lightgray" },
-                pointLabels: { font: { size: 14 } },
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "right",
+            labels: {
+              boxWidth: 12,
+              font: { size: 12 },
             },
+          },
+        },
+        scales: {
+          r: {
+            suggestedMin: -10,
+            suggestedMax: 10,
+            angleLines: { color: "gray" },
+            grid: { color: "lightgray" },
+            pointLabels: { font: { size: 14 } },
+          },
         },
     };
-    
+      
 
     return (
-        <div style={{ width: "500px", height: "500px" }}>
-            <Radar data={data} options={options} />
+        <div style={{ display: "flex", width: "100%", height: "300px" }}>
+            {/* Radar Chart 本體區塊 */}
+            <div style={{ flex: "1 1 70%", minWidth: 0 }}>
+                <Radar data={data} options={options} />
+            </div>
         </div>
     );
 };

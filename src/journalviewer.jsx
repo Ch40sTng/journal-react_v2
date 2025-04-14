@@ -29,7 +29,7 @@ const JournalViewer = () => {
 
   const [collections, setCollections] = useState([]);
 
-  const [sortOption, setSortOption] = useState("");
+  const [sortOption, setSortOption] = useState("if_value");
   const [sortDirection, setSortDirection] = useState("desc");
 
   const fetchCollections = async () => {
@@ -132,7 +132,7 @@ const JournalViewer = () => {
     const start = (newPage - 1) * itemsPerPage;
     const end = start + itemsPerPage - 1;
 
-    const sortBy = sortOption || "if_value"; // 預設以 IF 排序
+    const sortBy = sortOption;
     const ascending = sortDirection === "asc";
 
   
@@ -158,13 +158,7 @@ const JournalViewer = () => {
     if (selectedField) {
       fetchJournals(page, selectedField);
     }
-  }, [page, selectedField, displayName]);
-
-  useEffect(() => {
-    if (selectedField) {
-      fetchJournals(page, selectedField);
-    }
-  }, [page, selectedField, sortOption, sortDirection]);
+  }, [page, selectedField, sortOption, sortDirection, displayName]);
 
   useEffect(() => {
     if (!displayName) return;
@@ -174,6 +168,7 @@ const JournalViewer = () => {
   const handleFieldChange = (event) => {
     const field = event.target.value;
     setSelectedField(field);
+    setPage(1);
     fetchJournals(page, field);
   };
 
@@ -198,101 +193,104 @@ const JournalViewer = () => {
   };
 
   return (
-    <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">{displayName} Journal Viewer</h1>
-        <select
-            className="p-2 border rounded mb-4"
-            value={selectedField}
-            onChange={handleFieldChange}
-        >
-            <option value="">Select Field</option>
-            {fields.map((field) => (
-                <option key={field} value={field}>{field}</option>
-            ))}
-        </select>
-        
-        {/* 排序欄位選單 */}
-        <select
-          className="p-2 border rounded mb-4 ml-4"
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-        >
-          <option value="">選擇排序欄位</option>
-          <option value="if_value">IF</option>
-          <option value="cites">Total Cites</option>
-        </select>
+    <div>
+      <section className="w-100 py-4" style={{ backgroundColor: "#555555" }}>
+        <div className="container">
+          <div className="p-4 bg-white shadow-sm rounded-4">
+            <h2 className="fw-bold fs-2 border-bottom pb-3 mb-4 text-dark">
+              {displayName} Journal Viewer
+            </h2>
 
-        {/* 排序方向選單 */}
-        <select
-          className="p-2 border rounded mb-4 ml-4"
-          value={sortDirection}
-          onChange={(e) => setSortDirection(e.target.value)}
-        >
-          <option value="asc">遞增</option>
-          <option value="desc">遞減</option>
-        </select>
+            <div className="row g-4">
+              <div className="col-md-4">
+                <label className="form-label text-secondary">選擇領域</label>
+                <select
+                  className="form-select rounded-3 shadow-sm"
+                  value={selectedField}
+                  onChange={handleFieldChange}
+                >
+                  {fields.map((field) => (
+                    <option key={field} value={field}>{field}</option>
+                  ))}
+                </select>
+              </div>
 
+              <div className="col-md-4">
+                <label className="form-label text-secondary">排序欄位</label>
+                <select
+                  className="form-select rounded-3 shadow-sm"
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                >
+                  <option value="if_value">IF</option>
+                  <option value="cites">Total Cites</option>
+                </select>
+              </div>
 
-        <ul>
-          {loading ? (
-            <li className="text-center">Loading...</li>
-          ) : <DisplayJournal 
-                journals={journals}
-                expandedIds={expandedIds}
-                toggleJournal={toggleJournal}
-                collections={collections}
-                toggleCollection={toggleCollection}
-              />}
-        </ul>
-
-        {/* 分頁按鈕 */}
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <button
-            className="btn mx-2 d-flex align-items-center justify-content-center"
-            style={{
-              backgroundColor: "#333",
-              color: "#fff",
-              border: "none",
-              borderRadius: "50%",
-              width: "40px",
-              height: "40px",
-              boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.2)",
-              transition: "background 0.3s ease",
-              opacity: page === 1 ? 0.5 : 1, // 禁用時降低透明度
-              cursor: page === 1 ? "not-allowed" : "pointer",
-            }}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#555")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = "#333")}
-            onClick={handlePrevPage}
-            disabled={page === 1}
-          >
-            <FaChevronLeft />
-          </button>
-
-          <span style={{ fontSize: "1.2rem", fontWeight: "bold", color: "#444", margin: "0 10px" }}>
-            {page}
-          </span>
-
-          <button
-            className="btn mx-2 d-flex align-items-center justify-content-center"
-            style={{
-              backgroundColor: "#333",
-              color: "#fff",
-              border: "none",
-              borderRadius: "50%",
-              width: "40px",
-              height: "40px",
-              boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.2)",
-              transition: "background 0.3s ease",
-            }}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#555")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = "#333")}
-            onClick={handleNextPage}
-          >
-            <FaChevronRight />
-          </button>
+              <div className="col-md-4">
+                <label className="form-label text-secondary d-block">排序方向</label>
+                <div className="btn-group shadow-sm" role="group">
+                  <button
+                    className={`btn btn-${sortDirection === "asc" ? "dark" : "outline-dark"}`}
+                    onClick={() => setSortDirection("asc")}
+                  >
+                    遞增
+                  </button>
+                  <button
+                    className={`btn btn-${sortDirection === "desc" ? "dark" : "outline-dark"}`}
+                    onClick={() => setSortDirection("desc")}
+                  >
+                    遞減
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+
+      <ul>
+        {loading ? (
+          <li className="text-center">Loading...</li>
+        ) : <DisplayJournal 
+              journals={journals}
+              expandedIds={expandedIds}
+              toggleJournal={toggleJournal}
+              collections={collections}
+              toggleCollection={toggleCollection}
+            />}
+      </ul>
+
+      <nav className="mt-5">
+        <ul className="pagination justify-content-center">
+          <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+            <button
+              className="page-link rounded-3 shadow-sm px-3 py-2 text-dark"
+              onClick={handlePrevPage}
+              style={{ fontSize: "1rem" }}
+              aria-label="Previous"
+            >
+              <FaChevronLeft />
+            </button>
+          </li>
+          <li className="page-item disabled">
+            <span className="page-link bg-white border-0 fw-bold fs-6 shadow-none">{page}</span>
+          </li>
+          <li className="page-item">
+            <button
+              className="page-link rounded-3 shadow-sm px-3 py-2 text-dark"
+              onClick={handleNextPage}
+              style={{ fontSize: "1rem" }}
+              aria-label="Next"
+            >
+              <FaChevronRight />
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+    </div>
   );
 };
 

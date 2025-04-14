@@ -4,7 +4,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const LineChart = ({ journal }) => {
+const LineChart = ({ journal, width = "100%", height = 350 }) => {
   const years = [2019, 2020, 2021, 2022, 2023, 2024];
   const ifValues = journal.if_value.map(value => Number(value)).reverse();
   const totalCites = journal.totalcites.map(value => Number(value)).reverse(); 
@@ -68,7 +68,7 @@ const LineChart = ({ journal }) => {
     },
   };
 
-  return <div style={{ height: "300px" }}><Line data={data} options={options} /></div>;
+  return <div style={{ width: "100%", height: "300px" }}> <Line data={data} options={options} /></div>;
 };
 
 export default LineChart;
