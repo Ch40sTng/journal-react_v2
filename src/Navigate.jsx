@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, Dropdown, Form, Button, InputGroup } from 'react-bootstrap';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa'
 
 import supabase from "./supabaseClient";
@@ -34,6 +34,7 @@ const Navigate = () => {
   };
 
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -42,7 +43,9 @@ const Navigate = () => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     // 這裡可以進行搜尋的處理
-    console.log("Searching for:", searchQuery);
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
   };
 
   return (
