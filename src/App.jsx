@@ -8,6 +8,7 @@ import Journal from "./pages/journal";
 import Login from "./pages/login";
 import JournalViewer from "./pages/journalviewer";
 import Collections from "./pages/collections"
+import SearchPage from "./pages/searchPage";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
               <Route path="/login" element={<Login/>}/>
               <Route path="/journals/:databaseName" element={<JournalViewer />} />
               <Route path="/collections" element={<Collections />} />
+              <Route path="/search" element={<SearchPage/>} />
           </Routes>
     </BrowserRouter>
   );
