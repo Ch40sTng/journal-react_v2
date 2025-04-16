@@ -1,7 +1,7 @@
-import supabase from "./supabaseClient";
+import supabase from "../supabaseClient";
 import { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import DisplayJournal from "./displayJournal";
+import DisplayJournal from "../displayJournal";
 
 const Journal = () => {
   const [journals, setJournals] = useState([]);
@@ -205,8 +205,8 @@ const Journal = () => {
   };
 
   return (
-    <div>
-      <section className="w-100 py-4" style={{ backgroundColor: "#555555" }}>
+    <div style={{ backgroundColor: "#fcfcfc"}}>
+      <section className="w-100 py-4" style={{ backgroundColor: "#e0e0e0" }}>
         <div className="container">
           <div className="p-4 bg-white shadow-sm rounded-4">
             <h2 className="fw-bold fs-2 border-bottom pb-3 mb-4 text-dark">

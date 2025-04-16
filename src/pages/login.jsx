@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Nav, Form, Button, Alert, Spinner } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-import supabase from "./supabaseClient";
+import supabase from "../supabaseClient";
 
 function Login() {
     const navigate = useNavigate();

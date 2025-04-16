@@ -1,5 +1,6 @@
-import LineChart from "./linechart";
-import RadarChart from "./radarchart";
+import LineChart from "./charts/linechart";
+import LineChart2 from "./charts/linechart2";
+import RadarChart from "./charts/radarchart";
 import { FiChevronLeft, FiChevronRight, FiChevronDown } from "react-icons/fi";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import React, { useState } from "react";
@@ -11,7 +12,7 @@ const getLatestUpdate = (arr) => {
 
 const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, toggleCollection, checkBox, selectedJournals, toggleSelectedJournal}) => {
   const [currentChartIndex, setCurrentChartIndex] = useState(0);
-  const charts = [LineChart, RadarChart];
+  const charts = [LineChart, RadarChart, LineChart2];
 
   // 切換到下一個圖表
   const handleNextChart = () => {

@@ -2,12 +2,12 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Home from "./home";
+import Home from "./pages/home";
 import Navigate from "./Navigate";
-import Journal from "./journal";
-import Login from "./login";
-import JournalViewer from "./journalviewer";
-import Collections from "./collections";
+import Journal from "./pages/journal";
+import Login from "./pages/login";
+import JournalViewer from "./pages/journalviewer";
+import Collections from "./pages/collections"
 
 const App = () => {
   return (
