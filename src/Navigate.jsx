@@ -48,7 +48,9 @@ const Navigate = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="px-4">
       <Container> {/* 使用 fluid 讓容器占滿全寬 */}
-        <Navbar.Brand as={Link} to="/">Journal Universe</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/" style={{ fontSize: '1.5rem', fontWeight: '700' }}>
+          Journal Universe
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
           <Nav className="ms-auto">
@@ -59,33 +61,33 @@ const Navigate = () => {
                 placeholder="Search"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="rounded-start border-end-0 px-3 py-2"  // 統一圓角，去除右邊的邊框
+                className="rounded-start border-end-0 px-3 py-2"
                 style={{
-                  boxShadow: '0 2px 5px rgba(0,0,0,0.1)',  // 輕微陰影
-                  transition: 'all 0.3s ease',  // 過渡效果
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                  transition: 'all 0.3s ease',
                 }}
-                onFocus={(e) => e.target.style.boxShadow = '0 0 10px rgba(0, 123, 255, 0.6)'}  // 聚焦效果
-                onBlur={(e) => e.target.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)'}  // 失焦效果
+                onFocus={(e) => e.target.style.boxShadow = '0 0 10px rgba(0, 123, 255, 0.6)'}
+                onBlur={(e) => e.target.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)'}
               />
               <Button
                 variant="light"
-                className="rounded-end border-0 px-3 py-2"  // 統一圓角，去除邊框
+                className="rounded-end border-0 px-3 py-2"
                 type="submit"
                 onClick={handleSearchSubmit}
                 style={{
-                  backgroundColor: '#f8f9fa',  // 背景顏色
-                  boxShadow: '0 2px 5px rgba(0,0,0,0.1)',  // 輕微陰影
-                  transition: 'all 0.3s ease',  // 過渡效果
+                  backgroundColor: '#f8f9fa',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                  transition: 'all 0.3s ease', 
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#e9ecef'}  // 滑鼠懸停效果
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#f8f9fa'}  // 滑鼠離開效果
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#e9ecef'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#f8f9fa'} 
               >
                 <FaSearch />
               </Button>
             </InputGroup>
 
             <Dropdown className="ms-3 d-flex align-items-center">
-            <Dropdown.Toggle style={{ backgroundColor: 'transparent', border: 'none', color: '#fff' }} id="dropdown-subjects">
+              <Dropdown.Toggle style={{ backgroundColor: 'transparent', border: 'none', color: '#fff' }} id="dropdown-subjects">
                 Database
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -131,13 +133,18 @@ const Navigate = () => {
               <>
                 <Nav.Link as={Link} to="/collections" style={{ color: '#fff' }}>Collections</Nav.Link>
                 <Nav.Link 
-                    as="button" 
-                    onClick={handleLogout} 
-                    style={{ 
-                      color: "#fff", 
-                    }}
-                  >
-                    Logout
+                  as="button" 
+                  onClick={handleLogout} 
+                  style={{ 
+                    color: "#fff", 
+                    backgroundColor: 'transparent', 
+                    border: 'none', 
+                    transition: 'color 0.3s ease',
+                  }}
+                  onMouseEnter={(e) => e.target.style.color = '#ffeb3b'} 
+                  onMouseLeave={(e) => e.target.style.color = '#fff'}
+                >
+                  Logout
                 </Nav.Link>
               </>
             ) : (
@@ -147,6 +154,7 @@ const Navigate = () => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+
   );
 };
 

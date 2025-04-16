@@ -196,7 +196,7 @@ const Collections = () => {
 
   return (
     <div style={{ backgroundColor: "#fcfcfc" }}>
-      <section className="w-100 py-4" style={{ backgroundColor: "#e0e0e0" }}>
+      <section className="bg-dark text-white py-5">
         <div className="container">
           <div className="p-4 bg-white shadow-sm rounded-4">
             <h2 className="fw-bold fs-2 border-bottom pb-3 mb-4 text-dark">
