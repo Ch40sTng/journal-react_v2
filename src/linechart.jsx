@@ -4,7 +4,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const LineChart = ({ journal, width = "100%", height = 350 }) => {
+const LineChart = ({ journal }) => {
   const years = [2019, 2020, 2021, 2022, 2023, 2024];
   const ifValues = journal.if_value.map(value => Number(value)).reverse();
   const totalCites = journal.totalcites.map(value => Number(value)).reverse(); 

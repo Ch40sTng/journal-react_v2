@@ -37,7 +37,7 @@ const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, tog
   
   // console.log("fetch collection:",collections);
   if (journals.length == 0) {
-	  return <p>沒有期刊資料。</p>
+	  return <div className="container my-4 fs-4 text-center text-secondary">沒有期刊資料。</div>
   }
   if (!collections) return null;
 

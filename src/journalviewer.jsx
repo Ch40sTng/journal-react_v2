@@ -26,6 +26,7 @@ const JournalViewer = () => {
 
   const [fields, setFields] = useState([]);
   const [selectedField, setSelectedField] = useState("");
+  const [loadingFields, setLoadingFields] = useState(false);
 
   const [collections, setCollections] = useState([]);
 
@@ -103,28 +104,36 @@ const JournalViewer = () => {
   //接收supabase資料
   const fetchFields = async () => {
     if (!displayName) return;
-  
+
+    setLoadingFields(true);
+
     let allFields = new Set();
     let start = 0;
     const batchSize = 1000;
-  
-    while (true) {
-      const { data, error } = await supabase
-        .from("journals")
-        .select("field")
-        .eq("database", displayName)
-        .order("field", { ascending: true })
-        .range(start, start + batchSize - 1);
-  
-      if (error) throw new Error(error.message);
-      if (!data || data.length === 0) break;
-  
-      data.forEach(item => allFields.add(item.field));
-      start += batchSize;
+    
+    try {
+      while (true) {
+        const { data, error } = await supabase
+          .from("journals")
+          .select("field")
+          .eq("database", displayName)
+          .order("field", { ascending: true })
+          .range(start, start + batchSize - 1);
+    
+        if (error) throw new Error(error.message);
+        if (!data || data.length === 0) break;
+    
+        data.forEach(item => allFields.add(item.field));
+        start += batchSize;
+      }
+    
+      setFields([...allFields]);
+      console.log("Successfully fetched fields");
+    } catch (error) {
+      console.error("Error fetching fields:", error.message);
+    } finally {
+      setLoadingFields(false);
     }
-  
-    setFields([...allFields]);
-    console.log("Successfully fetch field")
   };
 
   const fetchJournals = async (newPage, field) => {
@@ -134,7 +143,6 @@ const JournalViewer = () => {
 
     const sortBy = sortOption;
     const ascending = sortDirection === "asc";
-
   
     const { data, error } = await supabase
       .from('journal_data')
@@ -208,11 +216,14 @@ const JournalViewer = () => {
                   className="form-select rounded-3 shadow-sm"
                   value={selectedField}
                   onChange={handleFieldChange}
+                  disabled={loadingFields}
                 >
+                  <option value="" disabled>請選擇領域</option>
                   {fields.map((field) => (
                     <option key={field} value={field}>{field}</option>
                   ))}
                 </select>
+                {loadingFields && <div className="form-text text-muted mt-1">載入領域中...</div>}
               </div>
 
               <div className="col-md-4">
