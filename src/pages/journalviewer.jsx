@@ -10,6 +10,9 @@ const databaseNameMap = {
   "JCR-SCIE": "JCR資料庫-SCIE",
   "JCR-SSCI": "JCR資料庫-SSCI",
   "Scopus": "Scopus",
+  "TCI": "TCI資料庫(國家圖書館-臺灣人文及社會科學引文資料庫)",
+  "TSSCI": "TSSCI",
+  "THCI": "THCI",
   "Literature": "文學院認列核心期刊",
   "Management": "管理學院傑出期刊"
 };

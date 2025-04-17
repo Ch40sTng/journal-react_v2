@@ -228,7 +228,7 @@ const Journal = () => {
                   <option value="JCR資料庫-ESCI">JCR資料庫-ESCI</option>
                   <option value="JCR資料庫-SCIE">JCR資料庫-SCIE</option>
                   <option value="JCR資料庫-SSCI">JCR資料庫-SSCI</option>
-                  <option value="TCI">TCI</option>
+                  <option value="TCI資料庫(國家圖書館-臺灣人文及社會科學引文資料庫)">TCI</option>
                   <option value="THCI">THCI</option>
                   <option value="TSSCI">TSSCI</option>
                   <option value="文學院認列核心期刊">文學院認列核心期刊</option>

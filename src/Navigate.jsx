@@ -122,11 +122,11 @@ const Navigate = () => {
                   </Dropdown.Menu>
                 </Dropdown>
 
-                <Dropdown.Item as={Link} to="/journals">TCI</Dropdown.Item>
-                <Dropdown.Item as={Link} to="/journals">THCI</Dropdown.Item>
-                <Dropdown.Item as={Link} to="/journals">TSSCI</Dropdown.Item>
-                <Dropdown.Item as={Link} to="/journals"> 文學院認列核心期刊</Dropdown.Item>
-                <Dropdown.Item as={Link} to="/journals">管理學院傑出期刊</Dropdown.Item>
+                <Dropdown.Item as={Link} to="/journals/TCI">TCI</Dropdown.Item>
+                <Dropdown.Item as={Link} to="/journals/THCI">THCI</Dropdown.Item>
+                <Dropdown.Item as={Link} to="/journals/TSSCI">TSSCI</Dropdown.Item>
+                <Dropdown.Item as={Link} to="/journals/Literature"> 文學院認列核心期刊</Dropdown.Item>
+                <Dropdown.Item as={Link} to="/journals/Management">管理學院傑出期刊</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
 
