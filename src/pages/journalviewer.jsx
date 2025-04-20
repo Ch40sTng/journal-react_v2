@@ -28,7 +28,7 @@ const JournalViewer = () => {
   const itemsPerPage = 5;
 
   const [fields, setFields] = useState([]);
-  const [selectedField, setSelectedField] = useState("");
+  const [selectedField, setSelectedField] = useState("all");
   const [loadingFields, setLoadingFields] = useState(false);
 
   const [collections, setCollections] = useState([]);
@@ -143,17 +143,22 @@ const JournalViewer = () => {
     setLoading(true);
     const start = (newPage - 1) * itemsPerPage;
     const end = start + itemsPerPage - 1;
-
+  
     const sortBy = sortOption;
     const ascending = sortDirection === "asc";
   
-    const { data, error } = await supabase
+    let query = supabase
       .from('journal_data')
       .select('*')
       .range(start, end)
       .eq("database", displayName)
-      .eq("field", field)
       .order(sortBy, { ascending });
+  
+    if (field && field !== "all") {
+      query = query.eq("field", field);
+    }
+  
+    const { data, error } = await query;
   
     if (error) {
       console.error('Error:', error);
@@ -180,7 +185,7 @@ const JournalViewer = () => {
     const field = event.target.value;
     setSelectedField(field);
     setPage(1);
-    fetchJournals(page, field);
+    fetchJournals(1, field);
   };
 
   //設定展開狀態
@@ -221,7 +226,7 @@ const JournalViewer = () => {
                   onChange={handleFieldChange}
                   disabled={loadingFields}
                 >
-                  <option value="" disabled>請選擇領域</option>
+                  <option value="all">全部領域</option>
                   {fields.map((field) => (
                     <option key={field} value={field}>{field}</option>
                   ))}
@@ -229,7 +234,7 @@ const JournalViewer = () => {
                 {loadingFields && <div className="form-text text-muted mt-1">載入領域中...</div>}
               </div>
 
-              <div className="col-md-4">
+              <div className="col-md-2">
                 <label className="form-label text-secondary">排序欄位</label>
                 <select
                   className="form-select rounded-3 shadow-sm"
@@ -237,7 +242,8 @@ const JournalViewer = () => {
                   onChange={(e) => setSortOption(e.target.value)}
                 >
                   <option value="if_value">IF</option>
-                  <option value="cites">Total Cites</option>
+                  <option value="totalcites">Total Cites</option>
+                  <option value="publication">Publications</option>
                 </select>
               </div>
 
@@ -266,7 +272,7 @@ const JournalViewer = () => {
 
       <ul>
         {loading ? (
-          <li className="text-center">Loading...</li>
+          <div className="container my-4 fs-4 text-center text-secondary">Loading ...</div>
         ) : <DisplayJournal 
               journals={journals}
               expandedIds={expandedIds}

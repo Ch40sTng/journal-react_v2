@@ -16,7 +16,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const LineChart2 = ({ journal }) => {
   const years = [2019, 2020, 2021, 2022, 2023, 2024];
 
-  const rawPublications = (journal.publications || []);
+  const rawPublications = (journal.publication || []);
   const rawNume = (journal.numerator || []);
   const rawDeno = (journal.denominator || []);
 

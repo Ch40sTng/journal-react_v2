@@ -1,20 +1,18 @@
 import React from "react";
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const CmpLineChart = ({ journals, metric }) => {
-
+const CmpBarChart = ({ journals, metric }) => {
   if (!journals || journals.length === 0) {
     return (
       <div
@@ -57,16 +55,10 @@ const CmpLineChart = ({ journals, metric }) => {
 
     return {
       label: journal.name || `期刊 ${idx + 1}`,
-      data: data.reverse(),
+      data: data,
+      backgroundColor: colors[idx % colors.length] + "88",
       borderColor: colors[idx % colors.length],
-      backgroundColor: colors[idx % colors.length] + "33",
-      tension: 0.3,
-      pointStyle: (ctx) =>
-        missingYears.includes(2024 - ctx.dataIndex) ? "crossRot" : "circle",
-      pointRadius: (ctx) =>
-        missingYears.includes(2024 - ctx.dataIndex) ? 7 : 4,
-      pointBackgroundColor: colors[idx % colors.length],
-      pointBorderColor: colors[idx % colors.length],
+      borderWidth: 1,
       missingYears,
     };
   });
@@ -101,7 +93,7 @@ const CmpLineChart = ({ journals, metric }) => {
             const i = ctx.dataIndex;
             const label = ctx.dataset.label;
             const missing = ctx.dataset.missingYears || [];
-            if (missing.includes(2024 - i)) {
+            if (missing.includes(years[i])) {
               return `${label}: 無資料`;
             }
             return `${label}: ${ctx.formattedValue}`;
@@ -123,61 +115,61 @@ const CmpLineChart = ({ journals, metric }) => {
   const missingInfo = datasets
     .map((d) => ({
       name: d.label,
-      missing: d.missingYears.map((y) => 2019 + (2024 - y)).reverse(),
+      missing: d.missingYears,
       color: d.borderColor,
     }))
     .filter((d) => d.missing.length > 0);
 
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          width: "100%",
-          gap: "24px", // 增加間距
-        }}
-      >
-        {/* 左邊：圖表 */}
-        <div style={{ width: "65%", height: "350px" }}>
-          <Line data={data} options={options} />
-          {journals.length > 5 && (
-            <div
-              style={{
-                textAlign: "center",
-                fontSize: "14px",
-                color: "#888",
-                marginTop: "10px",
-              }}
-            >
-              ※ 只顯示前 5 筆期刊資料
-            </div>
-          )}
-        </div>
-    
-        {/* 右邊：缺失資料提示 */}
-        {missingInfo.length > 0 && (
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        width: "100%",
+        gap: "24px",
+      }}
+    >
+      {/* 左邊：圖表 */}
+      <div style={{ width: "65%", height: "350px" }}>
+        <Bar data={data} options={options} />
+        {journals.length > 5 && (
           <div
             style={{
-              width: "35%",
+              textAlign: "center",
               fontSize: "14px",
-              padding: "10px",
-              backgroundColor: "#f9f9f9",
-              marginLeft: "10px",
-              borderLeft: "3px solid #ddd",
+              color: "#888",
+              marginTop: "10px",
             }}
           >
-            {missingInfo.map((item, i) => (
-              <div key={i} style={{ marginBottom: "10px" }}>
-                <strong style={{ color: item.color }}>{item.name} 缺失年分:</strong>
-                <br />
-                {item.missing.join(", ")}
-              </div>
-            ))}
+            ※ 只顯示前 5 筆期刊資料
           </div>
         )}
       </div>
-    );
+
+      {/* 右邊：缺失資料提示 */}
+      {missingInfo.length > 0 && (
+        <div
+          style={{
+            width: "35%",
+            fontSize: "14px",
+            padding: "10px",
+            backgroundColor: "#f9f9f9",
+            marginLeft: "10px",
+            borderLeft: "3px solid #ddd",
+          }}
+        >
+          {missingInfo.map((item, i) => (
+            <div key={i} style={{ marginBottom: "10px" }}>
+              <strong style={{ color: item.color }}>{item.name} 缺失年分:</strong>
+              <br />
+              {item.missing.join(", ")}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
-export default CmpLineChart;
+export default CmpBarChart;

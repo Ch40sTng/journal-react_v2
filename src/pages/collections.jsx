@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import supabase from "../supabaseClient";
 import DisplayJournal from "../displayJournal";
 import CmpLineChart from "../charts/cmpLineChart";
+import CmpBarChart from "../charts/cmpBarChart";
+import { FiChevronRight, FiChevronDown } from "react-icons/fi";
 
 const Collections = () => {
   const [collections, setCollections] = useState([]);
@@ -17,6 +19,10 @@ const Collections = () => {
 
   const [sortOption, setSortOption] = useState("if_value");
   const [sortDirection, setSortDirection] = useState("desc");
+
+  const [expandedChart, setExpandedChart] = useState("false");
+  const [chartMetric, setChartMetric] = useState("if_value");
+  const [chartType, setChartType] = useState("line");
 
   const fetchCollections = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -250,7 +256,8 @@ const Collections = () => {
                   onChange={(e) => setSortOption(e.target.value)}
                 >
                   <option value="if_value">IF</option>
-                  <option value="cites">Total Cites</option>
+                  <option value="totalcites">Total Cites</option>
+                  <option value="publication">Publications</option>
                 </select>
               </div>
 
@@ -279,24 +286,84 @@ const Collections = () => {
       <section className="w-100 py-4" style={{ backgroundColor: "#eeeeee" }}>
         <div className="container">
           <div className="p-4 bg-white shadow-sm rounded-4">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h4 className="fw-semibold text-dark mb-0">Selected Journals Comparison</h4>
-              <button
-                onClick={() => setSelectedJournals([])}
-                className="btn btn-outline-secondary btn-sm rounded-3 shadow-sm"
-              >
-                Clear Selection
-              </button>
+            <div 
+              className="d-flex flex-wrap align-items-center justify-content-between mb-3"
+              onClick={() => setExpandedChart(!expandedChart)}
+              style={{ cursor: "pointer" }}
+            >
+              <div className="d-flex align-items-center gap-2">
+                {expandedChart ? <FiChevronDown size={20} /> : <FiChevronRight size={20} />}
+                <h4 className="fw-bold text-dark mb-0 fs-4">Selected Journals Comparison Chart</h4>
+              </div>
             </div>
 
-            <div
-              className="bg-light rounded-4 shadow-sm d-flex justify-content-center align-items-center"
-              style={{ height: "400px" }}
-            >
-              <CmpLineChart
-                journals={journals.filter((j) => selectedJournals.includes(j.id))}
-              />
-            </div>
+            {/* Chart */}
+            {expandedChart && (
+              <div>
+                {/* Control Row */}
+                <div className="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-3">
+                  {/* 左側 - 圖表選項 */}
+                  <div className="d-flex flex-wrap align-items-center gap-3">
+                    <div className="d-flex align-items-center gap-2">
+                      <label className="form-label mb-0 text-secondary">圖表指標</label>
+                      <select
+                        className="form-select form-select-sm rounded-3 shadow-sm"
+                        style={{ width: "180px" }}
+                        value={chartMetric}
+                        onChange={(e) => setChartMetric(e.target.value)}
+                      >
+                        <option value="if_value">Impact Factor (IF)</option>
+                        <option value="totalcites">Total Cites</option>
+                        <option value="publication">Publications</option>
+                        {/* 更多指標可以加入 */}
+                      </select>
+                    </div>
+
+                    <div className="d-flex align-items-center gap-2">
+                      <label className="form-label mb-0 text-secondary">圖表類型</label>
+                      <select
+                        className="form-select form-select-sm rounded-3 shadow-sm"
+                        style={{ width: "160px" }}
+                        value={chartType}
+                        onChange={(e) => setChartType(e.target.value)}
+                      >
+                        <option value="line">線圖 (Line)</option>
+                        <option value="bar">長條圖 (Bar)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* 右側 - 清除選擇 */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedJournals([]);
+                    }}
+                    className="btn btn-outline-secondary btn-sm rounded-3 shadow-sm"
+                  >
+                    Clear Selection
+                  </button>
+                </div>
+
+                <div
+                  className="bg-light rounded-4 shadow-sm d-flex justify-content-center align-items-center"
+                  style={{ height: "400px", padding: "1rem" }}
+                > 
+                  {chartType === "line" && (
+                    <CmpLineChart
+                      journals={journals.filter((j) => selectedJournals.includes(j.id))}
+                      metric={chartMetric}
+                    />
+                  )}
+                  {chartType === "bar" && (
+                    <CmpBarChart
+                      journals={journals.filter((j) => selectedJournals.includes(j.id))}
+                      metric={chartMetric}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -304,7 +371,7 @@ const Collections = () => {
       {/* 收藏清單 */}
       <ul>
         {loading ? (
-          <li className="text-center">Loading...</li>
+          <div className="container my-4 fs-4 text-center text-secondary">Loading ...</div>
         ) : (
           <DisplayJournal
             journals={journals}

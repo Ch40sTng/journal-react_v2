@@ -260,7 +260,8 @@ const Journal = () => {
                   onChange={(e) => setSortOption(e.target.value)}
                 >
                   <option value="if_value">IF</option>
-                  <option value="cites">Total Cites</option>
+                  <option value="totalcites">Total Cites</option>
+                  <option value="publication">Publications</option>
                 </select>
               </div>
 
@@ -288,7 +289,7 @@ const Journal = () => {
 
       <ul>
         {loading ? (
-          <li className="text-center">Loading...</li>
+          <div className="container my-4 fs-4 text-center text-secondary">Loading ...</div>
         ) : <DisplayJournal 
               journals={journals}
               expandedIds={expandedIds}
