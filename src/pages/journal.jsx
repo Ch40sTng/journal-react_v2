@@ -1,7 +1,10 @@
 import supabase from "../supabaseClient";
 import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import DisplayJournal from "../displayJournal";
+import { Navbar, Nav, Container, Dropdown, Form, Button, InputGroup } from 'react-bootstrap';
+import { FaSearch } from 'react-icons/fa'
 
 const Journal = () => {
   const [journals, setJournals] = useState([]);
@@ -204,14 +207,97 @@ const Journal = () => {
     }
   };
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+
+    const q = searchQuery.trim();
+    // 如果沒輸入，回到 Supabase 分頁模式
+    if (!q) {
+      setPage(1);
+      fetchJournals(1);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      
+      let query = supabase
+        .from("journal_data")
+        .select("*")
+
+      if (selectedDB) query = query.eq("database", selectedDB);
+
+      if (selectedField) query = query.eq("field", selectedField);
+
+      query = query.ilike("name", `%${q}%`)
+        .order(sortOption, { ascending: sortDirection === "asc" });
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error("搜尋失敗：", error.message);
+      } else {
+        setJournals(data || []);
+        // 搜尋後重置分頁與展開狀態
+        setPage(1);
+        setExpandedIds({});
+      }
+    } catch (err) {
+      console.error("搜尋時發生錯誤：", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <div style={{ backgroundColor: "#fcfcfc"}}>
       <section className="bg-dark text-white py-5">
         <div className="container">
           <div className="p-4 bg-white shadow-sm rounded-4">
-            <h2 className="fw-bold fs-2 border-bottom pb-3 mb-4 text-dark">
+          <div className="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+            <h2 className="fw-bold fs-2 text-dark mb-0">
               All Journals
             </h2>
+
+            <InputGroup style={{ maxWidth: '350px' }}>
+              <Form.Control
+                type="text"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="rounded-start border-end-0 px-3 py-2"
+                style={{
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                  transition: 'all 0.3s ease',
+                }}
+                onFocus={(e) => e.target.style.boxShadow = '0 0 10px rgba(0, 123, 255, 0.6)'}
+                onBlur={(e) => e.target.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)'}
+              />
+              <Button
+                variant="light"
+                className="rounded-end border-0 px-3 py-2"
+                type="submit"
+                onClick={handleSearchSubmit}
+                style={{
+                  backgroundColor: '#f8f9fa',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                  transition: 'all 0.3s ease',
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#e9ecef'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#f8f9fa'} 
+              >
+                <FaSearch />
+              </Button>
+            </InputGroup>
+          </div>
+
 
             <div className="row g-4">
               {/* 資料庫選單 */}
