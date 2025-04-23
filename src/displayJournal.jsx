@@ -249,7 +249,12 @@ const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, tog
 
                   {/* 顯示當前的圖表 */}
                   <div style={{ flex: 1, textAlign: "center", minHeight: "350px" }}>
-                    {React.createElement(charts[currentChartIndex], { journal })}
+                  {React.createElement(
+                    charts[currentChartIndex],
+                    currentChartIndex === 1
+                      ? { journal, selectedYear: yearSelections[journal.id] }
+                      : { journal }
+                  )}
                   </div>
                   
                   {/* 右箭頭 */}

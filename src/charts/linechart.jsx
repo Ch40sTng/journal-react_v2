@@ -81,7 +81,7 @@ const LineChart = ({ journal }) => {
     plugins: {
       title: {
         display: true,
-        text: "期刊被引用次數與影響力歷年趨勢圖",
+        text: "期刊被引用次數與影響因子歷年趨勢圖",
         font: {
           size: 18,
           weight: "bold",
@@ -153,7 +153,7 @@ const LineChart = ({ journal }) => {
         >
           {missingIfValue.length > 0 && (
             <div>
-              <strong style={{ color: color1 }}>IF值缺失年分:</strong>{" "}
+              <strong style={{ color: color1 }}>影響因子缺失年分:</strong>{" "}
               {missingIfValue.map((y) => 2019 + (2024 - y)).reverse().join(", ")}
             </div>
           )}

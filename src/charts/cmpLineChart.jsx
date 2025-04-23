@@ -14,7 +14,6 @@ import {
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const CmpLineChart = ({ journals, metric }) => {
-
   if (!journals || journals.length === 0) {
     return (
       <div
@@ -37,9 +36,10 @@ const CmpLineChart = ({ journals, metric }) => {
   ];
 
   const metricLabels = {
-    if_value: "IF值",
+    if_value: "影響因子(Impact Factor)",
     totalcites: "被引用次數",
     publication: "發表數量",
+    ratio: "領先程度",
   };
 
   const datasets = journals.map((journal, idx) => {

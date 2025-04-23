@@ -35,9 +35,10 @@ const CmpBarChart = ({ journals, metric }) => {
   ];
 
   const metricLabels = {
-    if_value: "IF值",
+    if_value: "影響因子(Impact Factor)",
     totalcites: "被引用次數",
     publication: "發表數量",
+    ratio: "領先程度",
   };
 
   const datasets = journals.map((journal, idx) => {

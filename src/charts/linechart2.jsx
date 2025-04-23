@@ -156,7 +156,7 @@ const LineChart2 = ({ journal }) => {
         >
           {missingPublications.length > 0 && (
             <div>
-              <strong style={{ color: color1 }}>Publication缺失年分:</strong>{" "}
+              <strong style={{ color: color1 }}>發表篇數缺失年分:</strong>{" "}
               {missingPublications.map((y) => 2019 + (2024 - y)).reverse().join(", ")}
             </div>
           )}

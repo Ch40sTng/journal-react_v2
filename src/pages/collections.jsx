@@ -255,9 +255,10 @@ const Collections = () => {
                   value={sortOption}
                   onChange={(e) => setSortOption(e.target.value)}
                 >
-                  <option value="if_value">IF</option>
-                  <option value="totalcites">Total Cites</option>
-                  <option value="publication">Publications</option>
+                  <option value="if_value">Impact Factor</option>
+                  <option value="totalcites">被引用次數</option>
+                  <option value="publication">發表篇數</option>
+                  <option value="ratio">領先程度</option>
                 </select>
               </div>
 
@@ -315,6 +316,7 @@ const Collections = () => {
                         <option value="if_value">Impact Factor (IF)</option>
                         <option value="totalcites">Total Cites</option>
                         <option value="publication">Publications</option>
+                        <option value="ratio">領先程度</option>
                         {/* 更多指標可以加入 */}
                       </select>
                     </div>

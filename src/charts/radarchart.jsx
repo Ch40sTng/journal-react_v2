@@ -1,87 +1,103 @@
 import React from "react";
 import { Radar } from "react-chartjs-2";
-import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-const RadarChart = ( { journal, width = "100%", height = 350 } ) => {
+const RadarChart = ({ journal, selectedYear }) => {
+  if (!journal || !journal.if_value) {
+    return <p>Loading...</p>;
+  }
 
-    if (!journal || !journal.if_value) {
-        return <p>Loading...</p>;
-    }
-    
-    // 標準化函數 (Z-score normalization)
-    const standardizeData = (data, mean, stdDev) => {
-        return data.map(value => {
-            if (stdDev === 0) return 0; // 避免除以 0
-            return (value - mean) / stdDev;
-        });
-    };
-    
-    const years = [2019, 2020, 2021, 2022, 2023, 2024];
-    // 透過 fields 作為 index 直接存取 journal 裡的 array
-    const fields = ["if_value", "totalcites", "numerator", "denominator", "publication"];
-    const rawData = fields.map(field => journal[field].map(value => Number(value) || 0).reverse());
+  const years = [2019, 2020, 2021, 2022, 2023, 2024];
+  const selectedIndex = years.indexOf(selectedYear);
+  const fields = ["if_value", "totalcites", "numerator", "ratio"];
 
-    // 計算標準化所需的均值與標準差
-    const means = rawData.map(arr => arr.reduce((sum, val) => sum + val, 0) / arr.length);
-    const stdDevs = rawData.map((arr, i) => {
-        const mean = means[i];
-        const variance = arr.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / arr.length;
-        return Math.sqrt(variance);
+  // 將原始資料轉成數字，缺失值保留為 null
+  const rawData = fields.map(field =>
+    journal[field].map(value => {
+      const num = Number(value);
+      return isNaN(num) ? null : num;
+    }).reverse()
+  );
+
+  // 計算每欄平均值（忽略 null）
+  const means = rawData.map(arr => {
+    const valid = arr.filter(v => v !== null);
+    return valid.reduce((sum, val) => sum + val, 0) / valid.length;
+  });
+
+  // 計算標準差（n - 1，忽略 null）
+  const stdDevs = rawData.map((arr, i) => {
+    const mean = means[i];
+    const valid = arr.filter(v => v !== null);
+    const variance = valid.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (valid.length - 1 || 1);
+    return Math.sqrt(variance);
+  });
+
+  // Z-score 標準化（保留 null）
+  const standardizeData = (data, mean, stdDev) => {
+    return data.map(value => {
+      if (value === null) return null;
+      if (stdDev === 0) return 0;
+      return (value - mean) / stdDev;
     });
+  };
 
-    // 標準化數據
-    const standardizedData = rawData.map((data, i) => standardizeData(data, means[i], stdDevs[i]));
+  const standardizedData = rawData.map((data, i) =>
+    standardizeData(data, means[i], stdDevs[i])
+  );
 
-    
-    // 建立 datasets，每年一組
-    const datasets = years.map((year, i) => ({
-        label: `${journal.name}_${year}`,
-        data: standardizedData.map(values => values[i] ?? 0), // 避免 undefined
-        backgroundColor: `rgba(${50 + i * 50}, ${99 + i * 20}, 132, 0.2)`,
-        borderColor: `rgba(${50 + i * 50}, ${99 + i * 20}, 132, 1)`,
-        borderWidth: 2,
-    }));
+  const datasets = [
+    {
+      label: `${journal.name}_${selectedYear}`,
+      data: standardizedData.map(values => values[selectedIndex] ?? null),
+      backgroundColor: `rgba(100, 150, 200, 0.2)`,
+      borderColor: `rgba(100, 150, 200, 1)`,
+      borderWidth: 2,
+    },
+  ];
 
-    const data = {
-        labels: ["Impact factors", "TotalCites", "Rank Numerator", "Rank Denominator", "Publications"],
-        datasets: datasets
-    };
+  const data = {
+    labels: ["Impact Factor", "TotalCites", "Leading Rank", "Publications"],
+    datasets: datasets,
+  };
 
-    const options = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: "right",
-          labels: {
-            boxWidth: 10,
-            font: { size: 10 },
-          },
-          maxWidth: 100,
-        },
+  const options = {
+    responsive: true,
+    spanGaps: false,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
       },
-      scales: {
-        r: {
-          suggestedMin: -10,
-          suggestedMax: 10,
-          angleLines: { color: "gray" },
-          grid: { color: "lightgray" },
-          pointLabels: { font: { size: 14 } },
-        },
+    },
+    scales: {
+      r: {
+        suggestedMin: -10,
+        suggestedMax: 10,
+        angleLines: { color: "gray" },
+        grid: { color: "lightgray" },
+        pointLabels: { font: { size: 14 } },
       },
-    };
-      
+    },
+  };
 
-    return (
-        <div style={{ display: "flex", width: "100%", height: "350px" }}>
-          {/* Radar Chart 本體區塊 */}
-          <div style={{ flex: "1 1 85%", minWidth: 0 }}>
-            <Radar data={data} options={options} />
-          </div>
-        </div>
-    );
+  return (
+    <div style={{ display: "flex", width: "100%", height: "350px" }}>
+      <div style={{ flex: "1 1 85%", minWidth: 0 }}>
+        <Radar data={data} options={options} />
+      </div>
+    </div>
+  );
 };
 
 export default RadarChart;
