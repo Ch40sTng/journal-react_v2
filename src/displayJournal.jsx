@@ -59,7 +59,6 @@ const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, tog
   if (journals.length === 0) {
     return <div className="container my-4 fs-4 text-center text-secondary">沒有期刊資料。</div>
   }
-  
 
 	return (
 	  <div className="container my-4">
@@ -281,3 +280,4 @@ const DisplayJournal = ({ journals, expandedIds, toggleJournal, collections, tog
 };
 
 export default DisplayJournal;
+

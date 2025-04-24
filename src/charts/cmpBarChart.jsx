@@ -56,7 +56,7 @@ const CmpBarChart = ({ journals, metric }) => {
 
     return {
       label: journal.name || `期刊 ${idx + 1}`,
-      data: data,
+      data: data.reverse(),
       backgroundColor: colors[idx % colors.length] + "88",
       borderColor: colors[idx % colors.length],
       borderWidth: 1,
@@ -94,7 +94,7 @@ const CmpBarChart = ({ journals, metric }) => {
             const i = ctx.dataIndex;
             const label = ctx.dataset.label;
             const missing = ctx.dataset.missingYears || [];
-            if (missing.includes(years[i])) {
+            if (missing.includes(2024 - i)) {
               return `${label}: 無資料`;
             }
             return `${label}: ${ctx.formattedValue}`;
@@ -114,12 +114,12 @@ const CmpBarChart = ({ journals, metric }) => {
   };
 
   const missingInfo = datasets
-    .map((d) => ({
-      name: d.label,
-      missing: d.missingYears,
-      color: d.borderColor,
-    }))
-    .filter((d) => d.missing.length > 0);
+  .map((d) => ({
+    name: d.label,
+    missing: d.missingYears.map((y) => 2019 + (2024 - y)).reverse(),
+    color: d.borderColor,
+  }))
+  .filter((d) => d.missing.length > 0);
 
   return (
     <div
