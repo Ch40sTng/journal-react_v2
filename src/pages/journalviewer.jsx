@@ -265,7 +265,7 @@ const JournalViewer = () => {
           <div className="p-4 bg-white shadow-sm rounded-4">
           <div className="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
             <h2 className="fw-bold fs-2 text-dark mb-0">
-              All Journals
+              {displayName}
             </h2>
 
             <InputGroup style={{ maxWidth: '350px' }}>
